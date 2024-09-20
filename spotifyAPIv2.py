@@ -1,7 +1,7 @@
 import spotipy
 from datetime import datetime
 from spotipy.oauth2 import SpotifyOAuth
-from flask import Flask, request
+from flask import Flask, request, make_response
 
 app = Flask(__name__)
 
@@ -19,18 +19,22 @@ def play_pause():
     playback = spotify.current_playback()
     if playback and playback["is_playing"]:
         spotify.pause_playback()
+        return "Playback paused"
     else:
         spotify.start_playback()
+        return "Playback started"
 
 def next_song():
     spotify.next_track()
+    return "Playing next song"
 
 def previous_song():
     spotify.previous_track()
+    return "Playing previous song"
 
 @app.route('/playback/play', methods=['POST'])
 def control_playback_play():
-    result = play_pause()
+    result = play_pause()    
     return result, 200
 
 @app.route('/playback/next', methods=['POST'])
