@@ -1,7 +1,9 @@
 import spotipy
 from datetime import datetime
 from spotipy.oauth2 import SpotifyOAuth
-from pynput import keyboard
+from flask import Flask, request
+
+app = Flask(__name__)
 
 def create_spotify_client():
     return spotipy.Spotify(auth_manager=SpotifyOAuth(
@@ -12,8 +14,6 @@ def create_spotify_client():
     ))
 
 spotify = create_spotify_client()
-start_time = datetime.now()
-#time_change = datetime.timedelta(minutes=59)
 
 def play_pause():
     playback = spotify.current_playback()
@@ -22,23 +22,26 @@ def play_pause():
     else:
         spotify.start_playback()
 
-#play_pause()
+def next_song():
+    spotify.next_track()
 
-'''pressed_keys = set()
-play_pause_COMBO = {keyboard.Key.home, keyboard.Key.end, keyboard.Key.page_up}
+def previous_song():
+    spotify.previous_track()
 
-def on_press(key):
-    pressed_keys.add(key)
-    if all(k in pressed_keys for k in play_pause_COMBO):
-        play_pause()
+@app.route('/playback/play', methods=['POST'])
+def control_playback_play():
+    result = play_pause()
+    return result, 200
 
-def on_release(key):
-    if key in pressed_keys:
-        pressed_keys.remove(key)'''
+@app.route('/playback/next', methods=['POST'])
+def control_playback_next():
+    result = next_song()
+    return result, 200
 
+@app.route('/playback/previous', methods=['POST'])
+def control_playback_previous():
+    result = previous_song()
+    return result, 200
 
-with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
-    listener.join()
-
-#if datetime.now() == start_time + time_change:
-    #start_time = datetime.now()
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
