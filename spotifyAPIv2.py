@@ -7,9 +7,9 @@ app = Flask(__name__)
 
 def create_spotify_client():
     return spotipy.Spotify(auth_manager=SpotifyOAuth(
-        client_id = "055f3f1bc8d247e9ba37beb0b7b0ff5f",
-        client_secret = "7b444187bd5f4c5ab0dadcd9bd8b849f",
-        redirect_uri="http://localhost:8080",
+        client_id = "your_client_id",
+        client_secret = "your_client_secret",
+        redirect_uri="your_redirect_uri",
         scope="user-modify-playback-state user-read-playback-state",
     ))
 
